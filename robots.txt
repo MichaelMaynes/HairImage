@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://michaelmaynes.github.io/HairImage/sitemap.xml
