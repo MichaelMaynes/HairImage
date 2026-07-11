@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Admin Login | Hair Image</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-page">
+  <main class="admin-card">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">HI</span>
+      <span>
+        <strong>Hair Image</strong>
+        <small>Private administration</small>
+      </span>
+    </a>
+
+    <p class="eyebrow">Salon management</p>
+    <h1>Admin login</h1>
+    <p>This page will give Merle access to appointment requests, messages, reviews, and website updates.</p>
+
+    <div class="admin-warning">
+      The secure login is not active yet. We will connect this page to Supabase before using it for real customer information.
+    </div>
+
+    <form id="admin-form">
+      <label>
+        Email address
+        <input type="email" autocomplete="email" disabled placeholder="Admin email">
+      </label>
+      <label>
+        Password
+        <input type="password" autocomplete="current-password" disabled placeholder="Password">
+      </label>
+      <button class="button dark full-width" type="button" disabled>Sign In</button>
+    </form>
+
+    <a class="back-link" href="index.html">← Return to the Hair Image website</a>
+  </main>
+</body>
+</html>

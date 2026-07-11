@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hair Image is a welcoming hair salon in Titusville, Florida, owned by stylist Merle Geoghean.">
+  <title>Hair Image | Titusville Hair Salon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="Hair Image home">
+      <span class="brand-mark">HI</span>
+      <span>
+        <strong>Hair Image</strong>
+        <small>Titusville, Florida</small>
+      </span>
+    </a>
+
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="sr-only">Open navigation menu</span>
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact">Contact</a>
+      <a class="nav-button" href="#booking">Book an Appointment</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero section">
+      <div class="hero-copy">
+        <p class="eyebrow">A neighborhood salon with a personal touch</p>
+        <h1>Look your best.<br>Feel like yourself.</h1>
+        <p class="hero-text">
+          Hair Image is a welcoming salon in downtown Titusville, owned and operated by stylist Merle Geoghean.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#booking">Request an Appointment</a>
+          <a class="button secondary" href="tel:+13212640030">Call (321) 264-0030</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="Salon photo placeholder">
+        <div class="photo-placeholder large">
+          <span>Salon photo coming soon</span>
+        </div>
+        <div class="hours-card">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Open Tuesday–Friday</strong>
+            <small>11:30 AM–7:00 PM</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section split-section">
+      <div>
+        <p class="eyebrow">Meet your stylist</p>
+        <h2>About Merle</h2>
+      </div>
+      <div>
+        <p class="lead">
+          Merle Geoghean welcomes every client with friendly, personal service in a comfortable salon setting.
+        </p>
+        <p>
+          More information about Merle’s experience, specialties, and story will be added here soon.
+        </p>
+      </div>
+    </section>
+
+    <section id="services" class="section tinted-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">What we offer</p>
+          <h2>Services</h2>
+        </div>
+        <p>Service details and prices are coming soon. Call the salon for current availability.</p>
+      </div>
+
+      <div class="card-grid services-grid">
+        <article class="service-card">
+          <span class="service-number">01</span>
+          <h3>Haircuts</h3>
+          <p>Personalized cuts for your style, texture, and everyday routine.</p>
+          <strong>Pricing coming soon</strong>
+        </article>
+        <article class="service-card">
+          <span class="service-number">02</span>
+          <h3>Color</h3>
+          <p>Color services designed to refresh, blend, brighten, or transform your look.</p>
+          <strong>Pricing coming soon</strong>
+        </article>
+        <article class="service-card">
+          <span class="service-number">03</span>
+          <h3>Styling</h3>
+          <p>Everyday styling and special-event looks tailored to you.</p>
+          <strong>Pricing coming soon</strong>
+        </article>
+      </div>
+    </section>
+
+    <section id="gallery" class="section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Inside Hair Image</p>
+          <h2>Gallery</h2>
+        </div>
+        <p>Salon and hairstyle photos will be added soon.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="photo-placeholder"><span>Salon photo</span></div>
+        <div class="photo-placeholder tall"><span>Hairstyle photo</span></div>
+        <div class="photo-placeholder"><span>Stylist photo</span></div>
+        <div class="photo-placeholder"><span>Hairstyle photo</span></div>
+      </div>
+    </section>
+
+    <section id="reviews" class="section reviews-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Client experiences</p>
+          <h2>Reviews</h2>
+        </div>
+        <p>Approved customer reviews will appear here once the review system is connected.</p>
+      </div>
+
+      <div class="review-placeholder">
+        <span class="quote-mark">“</span>
+        <p>Be one of the first clients featured on the Hair Image website.</p>
+        <a href="#contact">Leave a message</a>
+      </div>
+    </section>
+
+    <section id="booking" class="section booking-section">
+      <div class="booking-intro">
+        <p class="eyebrow">Plan your visit</p>
+        <h2>Request an appointment</h2>
+        <p>
+          Send your preferred service, date, and time. Your appointment is not confirmed until the salon contacts you.
+        </p>
+
+        <div class="contact-list">
+          <a href="tel:+13212640030">
+            <span>Phone</span>
+            <strong>(321) 264-0030</strong>
+          </a>
+          <a href="https://www.google.com/maps/search/?api=1&query=219+S+Hopkins+Ave+Titusville+FL+32796" target="_blank" rel="noopener">
+            <span>Address</span>
+            <strong>219 S Hopkins Ave<br>Titusville, FL 32796</strong>
+          </a>
+        </div>
+      </div>
+
+      <form id="booking-form" class="form-card">
+        <div class="form-row">
+          <label>
+            Full name
+            <input type="text" name="name" autocomplete="name" required>
+          </label>
+          <label>
+            Phone number
+            <input type="tel" name="phone" autocomplete="tel" required>
+          </label>
+        </div>
+
+        <label>
+          Email address
+          <input type="email" name="email" autocomplete="email">
+        </label>
+
+        <label>
+          Service
+          <select name="service" required>
+            <option value="">Choose a service</option>
+            <option>Haircut</option>
+            <option>Color</option>
+            <option>Styling</option>
+            <option>Other / Not sure</option>
+          </select>
+        </label>
+
+        <div class="form-row">
+          <label>
+            Preferred date
+            <input id="appointment-date" type="date" name="date" required>
+          </label>
+          <label>
+            Preferred time
+            <input type="time" name="time" min="11:30" max="19:00" required>
+          </label>
+        </div>
+
+        <label>
+          Notes
+          <textarea name="notes" rows="4" placeholder="Tell us what you would like done or share a second-choice time."></textarea>
+        </label>
+
+        <button class="button primary full-width" type="submit">Send Appointment Request</button>
+        <p class="form-note">Online submissions will be activated when the secure database is connected. For now, please call the salon.</p>
+        <div class="form-message" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div>
+        <p class="eyebrow">Questions?</p>
+        <h2>Send a message</h2>
+        <p>Use this form for general questions. For quicker help, call the salon during business hours.</p>
+      </div>
+
+      <form id="contact-form" class="form-card compact">
+        <label>
+          Name
+          <input type="text" name="name" autocomplete="name" required>
+        </label>
+        <label>
+          Phone or email
+          <input type="text" name="contact" required>
+        </label>
+        <label>
+          Message
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+        <button class="button dark full-width" type="submit">Send Message</button>
+        <div class="form-message" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section class="section visit-section">
+      <div>
+        <p class="eyebrow">Visit Hair Image</p>
+        <h2>Hours & location</h2>
+      </div>
+
+      <div class="hours-layout">
+        <div class="hours-table">
+          <div><span>Monday</span><strong>Closed</strong></div>
+          <div><span>Tuesday</span><strong>11:30 AM–7:00 PM</strong></div>
+          <div><span>Wednesday</span><strong>11:30 AM–7:00 PM</strong></div>
+          <div><span>Thursday</span><strong>11:30 AM–7:00 PM</strong></div>
+          <div><span>Friday</span><strong>11:30 AM–7:00 PM</strong></div>
+          <div><span>Saturday</span><strong>Closed</strong></div>
+          <div><span>Sunday</span><strong>Closed</strong></div>
+        </div>
+
+        <div class="location-card">
+          <span>Hair Image</span>
+          <strong>219 S Hopkins Ave<br>Titusville, FL 32796</strong>
+          <a class="button secondary" href="https://www.google.com/maps/search/?api=1&query=219+S+Hopkins+Ave+Titusville+FL+32796" target="_blank" rel="noopener">Open in Google Maps</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>Hair Image</strong>
+      <p>Personal hair care in Titusville, Florida.</p>
+    </div>
+    <div class="footer-links">
+      <a href="tel:+13212640030">(321) 264-0030</a>
+      <a href="admin.html">Admin Login</a>
+    </div>
+    <p class="copyright">© <span id="year"></span> Hair Image. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
