@@ -3,44 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex">
-  <title>Admin Login | Hair Image</title>
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Dashboard | Hair Image</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="admin-page">
-  <main class="admin-card">
+<body class="admin-dashboard-page">
+  <header class="admin-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">HI</span>
       <span>
         <strong>Hair Image</strong>
-        <small>Private administration</small>
+        <small>Salon administration</small>
       </span>
     </a>
 
-    <p class="eyebrow">Salon management</p>
-    <h1>Admin login</h1>
-    <p>This page will give Merle access to appointment requests, messages, reviews, and website updates.</p>
-
-    <div class="admin-warning">
-      The secure login is not active yet. We will connect this page to Supabase before using it for real customer information.
+    <div class="admin-header-actions">
+      <span id="admin-user-label" class="admin-user-label"></span>
+      <button id="refresh-dashboard" class="button secondary small-button" type="button" hidden>Refresh</button>
+      <button id="logout-button" class="button dark small-button" type="button" hidden>Sign Out</button>
     </div>
+  </header>
 
-    <form id="admin-form">
-      <label>
-        Email address
-        <input type="email" autocomplete="email" disabled placeholder="Admin email">
-      </label>
-      <label>
-        Password
-        <input type="password" autocomplete="current-password" disabled placeholder="Password">
-      </label>
-      <button class="button dark full-width" type="button" disabled>Sign In</button>
-    </form>
+  <main class="admin-shell">
+    <section id="login-view" class="admin-login-panel">
+      <div class="admin-card">
+        <p class="eyebrow">Private salon management</p>
+        <h1>Admin login</h1>
+        <p>Sign in to view appointment requests, customer messages, and submitted reviews.</p>
 
-    <a class="back-link" href="index.html">← Return to the Hair Image website</a>
+        <form id="admin-login-form">
+          <label>
+            Email address
+            <input id="admin-email" type="email" autocomplete="email" required>
+          </label>
+
+          <label>
+            Password
+            <input id="admin-password" type="password" autocomplete="current-password" required>
+          </label>
+
+          <button class="button dark full-width" type="submit">Sign In</button>
+          <div class="form-message" role="status" aria-live="polite"></div>
+        </form>
+
+        <a class="back-link" href="index.html">← Return to the Hair Image website</a>
+      </div>
+    </section>
+
+    <section id="dashboard-view" class="dashboard-view" hidden>
+      <div class="dashboard-heading">
+        <div>
+          <p class="eyebrow">Salon management</p>
+          <h1>Dashboard</h1>
+          <p>Review new requests and update their status.</p>
+        </div>
+      </div>
+
+      <div class="dashboard-stats" aria-label="Dashboard totals">
+        <article>
+          <span>Pending appointments</span>
+          <strong id="pending-appointments-count">0</strong>
+        </article>
+        <article>
+          <span>New messages</span>
+          <strong id="new-messages-count">0</strong>
+        </article>
+        <article>
+          <span>Pending reviews</span>
+          <strong id="pending-reviews-count">0</strong>
+        </article>
+      </div>
+
+      <section class="admin-section">
+        <div class="admin-section-heading">
+          <div>
+            <p class="eyebrow">Scheduling</p>
+            <h2>Appointment requests</h2>
+          </div>
+          <label class="compact-filter">
+            Show
+            <select id="appointment-filter">
+              <option value="all">All appointments</option>
+              <option value="pending" selected>Pending</option>
+              <option value="approved">Approved</option>
+              <option value="declined">Declined</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
+            </select>
+          </label>
+        </div>
+        <div id="appointments-list" class="admin-record-list" aria-live="polite"></div>
+      </section>
+
+      <section class="admin-section">
+        <div class="admin-section-heading">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2>Customer messages</h2>
+          </div>
+        </div>
+        <div id="messages-list" class="admin-record-list" aria-live="polite"></div>
+      </section>
+
+      <section class="admin-section">
+        <div class="admin-section-heading">
+          <div>
+            <p class="eyebrow">Website moderation</p>
+            <h2>Reviews</h2>
+          </div>
+        </div>
+        <div id="admin-reviews-list" class="admin-record-list" aria-live="polite"></div>
+      </section>
+    </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
