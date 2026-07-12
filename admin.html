@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260712-1">
+  <link rel="stylesheet" href="style.css?v=20260712-2">
 </head>
 <body class="admin-dashboard-page">
   <header class="admin-header">
@@ -104,6 +104,18 @@
             <p class="eyebrow">Contact</p>
             <h2>Customer messages</h2>
           </div>
+
+          <label class="compact-filter">
+            Show
+            <select id="message-filter">
+              <option value="active" selected>Active messages</option>
+              <option value="new">New</option>
+              <option value="read">Read</option>
+              <option value="resolved">Resolved</option>
+              <option value="archived">Archived</option>
+              <option value="all">All messages</option>
+            </select>
+          </label>
         </div>
         <div id="messages-list" class="admin-record-list" aria-live="polite"></div>
       </section>
@@ -121,7 +133,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260712-1"></script>
-  <script src="admin.js?v=20260712-1"></script>
+  <script src="supabase-config.js?v=20260712-2"></script>
+  <script src="admin.js?v=20260712-2"></script>
 </body>
 </html>

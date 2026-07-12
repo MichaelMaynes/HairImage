@@ -1313,3 +1313,41 @@ button:disabled {
   font-size: 0.78rem;
   line-height: 1.5;
 }
+
+
+/* =========================================================
+   MESSAGE ARCHIVING AND DELETION
+   ========================================================= */
+
+.status-archived {
+  color: #5e5964;
+  background: #ebe8ee;
+}
+
+.archived-record-card {
+  opacity: 0.82;
+  background: #faf9f7;
+}
+
+.message-management-actions {
+  flex-wrap: wrap;
+}
+
+.danger-button {
+  color: #9a302b;
+  background: #fff;
+  border-color: rgba(154, 48, 43, 0.3);
+}
+
+.danger-button:hover {
+  color: #fff;
+  background: #9a302b;
+  border-color: #9a302b;
+}
+
+@media (max-width: 800px) {
+  .message-management-actions .button,
+  .message-management-actions label {
+    width: 100%;
+  }
+}

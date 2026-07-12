@@ -7,6 +7,7 @@ const logoutButton = document.querySelector("#logout-button");
 const refreshButton = document.querySelector("#refresh-dashboard");
 const adminUserLabel = document.querySelector("#admin-user-label");
 const appointmentFilter = document.querySelector("#appointment-filter");
+const messageFilter = document.querySelector("#message-filter");
 
 const appointmentsList = document.querySelector("#appointments-list");
 const messagesList = document.querySelector("#messages-list");
@@ -292,18 +293,38 @@ function renderAppointments() {
 }
 
 function renderMessages() {
-  if (messages.length === 0) {
-    renderEmpty(messagesList, "No customer messages yet.");
+  const selectedFilter = messageFilter ? messageFilter.value : "active";
+
+  let filteredMessages = messages;
+
+  if (selectedFilter === "active") {
+    filteredMessages = messages.filter((item) => item.status !== "archived");
+  } else if (selectedFilter !== "all") {
+    filteredMessages = messages.filter(
+      (item) => item.status === selectedFilter
+    );
+  }
+
+  if (filteredMessages.length === 0) {
+    const emptyText =
+      selectedFilter === "active"
+        ? "No active customer messages."
+        : selectedFilter === "all"
+          ? "No customer messages yet."
+          : `No ${selectedFilter} customer messages.`;
+
+    renderEmpty(messagesList, emptyText);
     return;
   }
 
-  messagesList.innerHTML = messages
+  messagesList.innerHTML = filteredMessages
     .map((item) => {
       const email = getMessageEmail(item);
       const phone = getMessagePhone(item);
+      const isArchived = item.status === "archived";
 
       return `
-        <article class="admin-record-card">
+        <article class="admin-record-card ${isArchived ? "archived-record-card" : ""}">
           <div class="admin-record-top">
             <div>
               <span class="record-kicker">Customer message</span>
@@ -344,15 +365,30 @@ function renderMessages() {
 
           ${renderMessageReplyButtons(item)}
 
-          <div class="record-actions">
+          <div class="record-actions message-management-actions">
             <label>
               Status
               <select data-message-status="${escapeHtml(item.id)}">
-                ${statusOptions(item.status, ["new", "read", "resolved"])}
+                ${statusOptions(item.status, ["new", "read", "resolved", "archived"])}
               </select>
             </label>
+
             <button class="button dark small-button" type="button"
-              data-save-message="${escapeHtml(item.id)}">Save Status</button>
+              data-save-message="${escapeHtml(item.id)}">
+              Save Status
+            </button>
+
+            <button class="button secondary small-button" type="button"
+              data-toggle-message-archive="${escapeHtml(item.id)}"
+              data-archived="${isArchived ? "true" : "false"}">
+              ${isArchived ? "Restore" : "Archive"}
+            </button>
+
+            <button class="button danger-button small-button" type="button"
+              data-delete-message="${escapeHtml(item.id)}"
+              data-customer-name="${escapeHtml(item.customer_name)}">
+              Delete Permanently
+            </button>
           </div>
         </article>
       `;
@@ -530,6 +566,7 @@ logoutButton.addEventListener("click", async () => {
 
 refreshButton.addEventListener("click", loadDashboard);
 appointmentFilter.addEventListener("change", renderAppointments);
+messageFilter.addEventListener("change", renderMessages);
 
 appointmentsList.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-save-appointment]");
@@ -564,32 +601,100 @@ appointmentsList.addEventListener("click", async (event) => {
 });
 
 messagesList.addEventListener("click", async (event) => {
-  const button = event.target.closest("[data-save-message]");
-  if (!button) return;
+  const saveButton = event.target.closest("[data-save-message]");
+  const archiveButton = event.target.closest("[data-toggle-message-archive]");
+  const deleteButton = event.target.closest("[data-delete-message]");
 
-  const id = button.dataset.saveMessage;
-  const select = messagesList.querySelector(
-    `[data-message-status="${CSS.escape(id)}"]`
-  );
-  const status = select.value;
+  if (!saveButton && !archiveButton && !deleteButton) return;
 
-  button.disabled = true;
-  button.textContent = "Saving…";
+  if (saveButton) {
+    const id = saveButton.dataset.saveMessage;
+    const select = messagesList.querySelector(
+      `[data-message-status="${CSS.escape(id)}"]`
+    );
+    const status = select.value;
 
-  const { error } = await db.from("messages").update({ status }).eq("id", id);
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving…";
 
-  button.disabled = false;
-  button.textContent = "Save Status";
+    const { error } = await db.from("messages").update({ status }).eq("id", id);
 
-  if (error) {
-    console.error("Message update failed:", error);
-    alert("The message status could not be updated.");
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Status";
+
+    if (error) {
+      console.error("Message update failed:", error);
+      alert("The message status could not be updated.");
+      return;
+    }
+
+    const item = messages.find((entry) => entry.id === id);
+    if (item) item.status = status;
+    renderDashboard();
     return;
   }
 
-  const item = messages.find((entry) => entry.id === id);
-  if (item) item.status = status;
-  renderDashboard();
+  if (archiveButton) {
+    const id = archiveButton.dataset.toggleMessageArchive;
+    const isArchived = archiveButton.dataset.archived === "true";
+    const nextStatus = isArchived ? "read" : "archived";
+
+    archiveButton.disabled = true;
+    archiveButton.textContent = isArchived ? "Restoring…" : "Archiving…";
+
+    const { error } = await db
+      .from("messages")
+      .update({ status: nextStatus })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Message archive update failed:", error);
+      alert(
+        isArchived
+          ? "The message could not be restored."
+          : "The message could not be archived."
+      );
+      archiveButton.disabled = false;
+      archiveButton.textContent = isArchived ? "Restore" : "Archive";
+      return;
+    }
+
+    const item = messages.find((entry) => entry.id === id);
+    if (item) item.status = nextStatus;
+    renderDashboard();
+    return;
+  }
+
+  if (deleteButton) {
+    const id = deleteButton.dataset.deleteMessage;
+    const customerName =
+      deleteButton.dataset.customerName || "this customer";
+
+    const confirmed = window.confirm(
+      `Permanently delete the message from ${customerName}?
+
+` +
+      "This cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    deleteButton.disabled = true;
+    deleteButton.textContent = "Deleting…";
+
+    const { error } = await db.from("messages").delete().eq("id", id);
+
+    if (error) {
+      console.error("Message deletion failed:", error);
+      alert("The message could not be deleted.");
+      deleteButton.disabled = false;
+      deleteButton.textContent = "Delete Permanently";
+      return;
+    }
+
+    messages = messages.filter((entry) => entry.id !== id);
+    renderDashboard();
+  }
 });
 
 reviewsList.addEventListener("click", async (event) => {
