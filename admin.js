@@ -8,6 +8,7 @@ const refreshButton = document.querySelector("#refresh-dashboard");
 const adminUserLabel = document.querySelector("#admin-user-label");
 const appointmentFilter = document.querySelector("#appointment-filter");
 const messageFilter = document.querySelector("#message-filter");
+const reviewFilter = document.querySelector("#review-filter");
 
 const appointmentsList = document.querySelector("#appointments-list");
 const messagesList = document.querySelector("#messages-list");
@@ -397,15 +398,36 @@ function renderMessages() {
 }
 
 function renderReviews() {
-  if (reviews.length === 0) {
-    renderEmpty(reviewsList, "No reviews have been submitted yet.");
+  const selectedFilter = reviewFilter ? reviewFilter.value : "active";
+
+  let filteredReviews = reviews;
+
+  if (selectedFilter === "active") {
+    filteredReviews = reviews.filter((item) => item.status !== "archived");
+  } else if (selectedFilter !== "all") {
+    filteredReviews = reviews.filter(
+      (item) => item.status === selectedFilter
+    );
+  }
+
+  if (filteredReviews.length === 0) {
+    const emptyText =
+      selectedFilter === "active"
+        ? "No active reviews."
+        : selectedFilter === "all"
+          ? "No reviews have been submitted yet."
+          : `No ${selectedFilter} reviews.`;
+
+    renderEmpty(reviewsList, emptyText);
     return;
   }
 
-  reviewsList.innerHTML = reviews
-    .map(
-      (item) => `
-        <article class="admin-record-card">
+  reviewsList.innerHTML = filteredReviews
+    .map((item) => {
+      const isArchived = item.status === "archived";
+
+      return `
+        <article class="admin-record-card ${isArchived ? "archived-record-card" : ""}">
           <div class="admin-record-top">
             <div>
               <span class="record-kicker">${"★".repeat(Number(item.rating))}${"☆".repeat(5 - Number(item.rating))}</span>
@@ -421,21 +443,45 @@ function renderReviews() {
             <p>${escapeHtml(item.review_text)}</p>
           </div>
 
-          <p class="record-timestamp">Submitted ${escapeHtml(formatDate(item.created_at, true))}</p>
+          <dl class="record-details review-record-details">
+            <div>
+              <dt>Submitted</dt>
+              <dd>${escapeHtml(formatDate(item.created_at, true))}</dd>
+            </div>
+            <div>
+              <dt>Public website</dt>
+              <dd>${item.status === "approved" ? "Visible" : "Not visible"}</dd>
+            </div>
+          </dl>
 
-          <div class="record-actions">
+          <div class="record-actions review-management-actions">
             <label>
               Status
               <select data-review-status="${escapeHtml(item.id)}">
-                ${statusOptions(item.status, ["pending", "approved", "hidden"])}
+                ${statusOptions(item.status, ["pending", "approved", "hidden", "archived"])}
               </select>
             </label>
+
             <button class="button dark small-button" type="button"
-              data-save-review="${escapeHtml(item.id)}">Save Status</button>
+              data-save-review="${escapeHtml(item.id)}">
+              Save Status
+            </button>
+
+            <button class="button secondary small-button" type="button"
+              data-toggle-review-archive="${escapeHtml(item.id)}"
+              data-archived="${isArchived ? "true" : "false"}">
+              ${isArchived ? "Restore" : "Archive"}
+            </button>
+
+            <button class="button danger-button small-button" type="button"
+              data-delete-review="${escapeHtml(item.id)}"
+              data-customer-name="${escapeHtml(item.customer_name)}">
+              Delete Permanently
+            </button>
           </div>
         </article>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
@@ -567,6 +613,7 @@ logoutButton.addEventListener("click", async () => {
 refreshButton.addEventListener("click", loadDashboard);
 appointmentFilter.addEventListener("change", renderAppointments);
 messageFilter.addEventListener("change", renderMessages);
+reviewFilter.addEventListener("change", renderReviews);
 
 appointmentsList.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-save-appointment]");
@@ -698,40 +745,143 @@ messagesList.addEventListener("click", async (event) => {
 });
 
 reviewsList.addEventListener("click", async (event) => {
-  const button = event.target.closest("[data-save-review]");
-  if (!button) return;
+  const saveButton = event.target.closest("[data-save-review]");
+  const archiveButton = event.target.closest("[data-toggle-review-archive]");
+  const deleteButton = event.target.closest("[data-delete-review]");
 
-  const id = button.dataset.saveReview;
-  const select = reviewsList.querySelector(
-    `[data-review-status="${CSS.escape(id)}"]`
-  );
-  const status = select.value;
+  if (!saveButton && !archiveButton && !deleteButton) return;
 
-  button.disabled = true;
-  button.textContent = "Saving…";
+  if (saveButton) {
+    const id = saveButton.dataset.saveReview;
+    const select = reviewsList.querySelector(
+      `[data-review-status="${CSS.escape(id)}"]`
+    );
+    const status = select.value;
 
-  const changes = {
-    status,
-    approved_at: status === "approved" ? new Date().toISOString() : null
-  };
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving…";
 
-  const { error } = await db.from("reviews").update(changes).eq("id", id);
+    const currentItem = reviews.find((entry) => entry.id === id);
+    const changes = {
+      status,
+      approved_at: status === "approved" ? new Date().toISOString() : null,
+      archived_from_status:
+        status === "archived"
+          ? (
+              currentItem?.status !== "archived"
+                ? currentItem?.status || "hidden"
+                : currentItem?.archived_from_status || "hidden"
+            )
+          : null
+    };
 
-  button.disabled = false;
-  button.textContent = "Save Status";
+    const { error } = await db.from("reviews").update(changes).eq("id", id);
 
-  if (error) {
-    console.error("Review update failed:", error);
-    alert("The review status could not be updated.");
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Status";
+
+    if (error) {
+      console.error("Review update failed:", error);
+      alert("The review status could not be updated.");
+      return;
+    }
+
+    if (currentItem) {
+      currentItem.status = status;
+      currentItem.approved_at = changes.approved_at;
+      currentItem.archived_from_status = changes.archived_from_status;
+    }
+
+    renderDashboard();
     return;
   }
 
-  const item = reviews.find((entry) => entry.id === id);
-  if (item) {
-    item.status = status;
+  if (archiveButton) {
+    const id = archiveButton.dataset.toggleReviewArchive;
+    const isArchived = archiveButton.dataset.archived === "true";
+    const item = reviews.find((entry) => entry.id === id);
+
+    if (!item) return;
+
+    const restoredStatus =
+      item.archived_from_status &&
+      ["pending", "approved", "hidden"].includes(item.archived_from_status)
+        ? item.archived_from_status
+        : "hidden";
+
+    const changes = isArchived
+      ? {
+          status: restoredStatus,
+          archived_from_status: null,
+          approved_at:
+            restoredStatus === "approved"
+              ? new Date().toISOString()
+              : null
+        }
+      : {
+          status: "archived",
+          archived_from_status:
+            item.status === "archived"
+              ? item.archived_from_status || "hidden"
+              : item.status,
+          approved_at: null
+        };
+
+    archiveButton.disabled = true;
+    archiveButton.textContent = isArchived ? "Restoring…" : "Archiving…";
+
+    const { error } = await db.from("reviews").update(changes).eq("id", id);
+
+    if (error) {
+      console.error("Review archive update failed:", error);
+      alert(
+        isArchived
+          ? "The review could not be restored."
+          : "The review could not be archived."
+      );
+      archiveButton.disabled = false;
+      archiveButton.textContent = isArchived ? "Restore" : "Archive";
+      return;
+    }
+
+    item.status = changes.status;
+    item.archived_from_status = changes.archived_from_status;
     item.approved_at = changes.approved_at;
+
+    renderDashboard();
+    return;
   }
-  renderDashboard();
+
+  if (deleteButton) {
+    const id = deleteButton.dataset.deleteReview;
+    const customerName =
+      deleteButton.dataset.customerName || "this customer";
+
+    const confirmed = window.confirm(
+      `Permanently delete the review from ${customerName}?
+
+` +
+      "This cannot be undone. If the review is currently approved, it will also disappear from the public website."
+    );
+
+    if (!confirmed) return;
+
+    deleteButton.disabled = true;
+    deleteButton.textContent = "Deleting…";
+
+    const { error } = await db.from("reviews").delete().eq("id", id);
+
+    if (error) {
+      console.error("Review deletion failed:", error);
+      alert("The review could not be deleted.");
+      deleteButton.disabled = false;
+      deleteButton.textContent = "Delete Permanently";
+      return;
+    }
+
+    reviews = reviews.filter((entry) => entry.id !== id);
+    renderDashboard();
+  }
 });
 
 async function initializeAdmin() {

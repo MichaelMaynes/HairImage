@@ -1351,3 +1351,23 @@ button:disabled {
     width: 100%;
   }
 }
+
+
+/* =========================================================
+   REVIEW ARCHIVING, FILTERING, AND DELETION
+   ========================================================= */
+
+.review-management-actions {
+  flex-wrap: wrap;
+}
+
+.review-record-details {
+  margin-top: 20px;
+}
+
+@media (max-width: 800px) {
+  .review-management-actions .button,
+  .review-management-actions label {
+    width: 100%;
+  }
+}
