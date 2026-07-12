@@ -246,12 +246,33 @@ if (contactForm) {
       return;
     }
 
+    const email = String(formData.get("email") || "").trim();
+    const phone = String(formData.get("phone") || "").trim();
+
+    if (!email && !phone) {
+      setFormMessage(
+        contactForm,
+        "Please provide an email address, phone number, or both so Hair Image can reply.",
+        "error"
+      );
+      return;
+    }
+
     setSubmitting(contactForm, true, "Sending message…");
     setFormMessage(contactForm, "");
 
+    const contactInformation = [
+      email ? `Email: ${email}` : "",
+      phone ? `Phone: ${phone}` : ""
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
     const { error } = await db.from("messages").insert({
       customer_name: String(formData.get("name") || "").trim(),
-      contact_information: String(formData.get("contact") || "").trim(),
+      contact_information: contactInformation,
+      email: email || null,
+      phone: phone || null,
       message: String(formData.get("message") || "").trim()
     });
 
@@ -274,6 +295,7 @@ if (contactForm) {
     );
   });
 }
+
 
 const reviewForm = document.querySelector("#review-form");
 if (reviewForm) {

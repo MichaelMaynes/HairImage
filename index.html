@@ -248,7 +248,7 @@
         <div class="form-row">
           <label>
             Full name
-            <input type="text" name="name" autocomplete="name" required maxlength="100>
+            <input type="text" name="name" autocomplete="name" required maxlength="100">
           </label>
           <label>
             Phone number
@@ -309,16 +309,28 @@
       <form id="contact-form" class="form-card compact">
         <label>
           Name
-          <input type="text" name="name" autocomplete="name" required maxlength="100>
+          <input type="text" name="name" autocomplete="name" required maxlength="100">
         </label>
-        <label>
-          Phone or email
-          <input type="text" name="contact" required maxlength="254">
-        </label>
+
+        <div class="form-row">
+          <label>
+            Email address
+            <input type="email" name="email" autocomplete="email" maxlength="254">
+          </label>
+
+          <label>
+            Phone number
+            <input type="tel" name="phone" autocomplete="tel" maxlength="40">
+          </label>
+        </div>
+
+        <p class="field-help">Please provide an email address, phone number, or both so the salon can reply.</p>
+
         <label>
           Message
           <textarea name="message" rows="5" required maxlength="2000"></textarea>
         </label>
+
         <label class="honeypot" aria-hidden="true">
           Website
           <input type="text" name="website" tabindex="-1" autocomplete="off">

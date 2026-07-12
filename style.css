@@ -1235,3 +1235,42 @@ button:disabled {
     gap: 4px;
   }
 }
+
+
+/* =========================================================
+   CUSTOMER REPLY ACTIONS
+   ========================================================= */
+
+.field-help {
+  margin: -7px 0 18px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.message-reply-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.reply-action-button {
+  text-decoration: none;
+}
+
+.no-reply-contact {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-style: italic;
+}
+
+@media (max-width: 560px) {
+  .message-reply-actions {
+    flex-direction: column;
+  }
+
+  .message-reply-actions .button {
+    width: 100%;
+  }
+}

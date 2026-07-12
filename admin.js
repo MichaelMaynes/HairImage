@@ -110,6 +110,86 @@ function statusOptions(current, values) {
     .join("");
 }
 
+
+function findEmailInText(value) {
+  const match = String(value || "").match(
+    /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i
+  );
+  return match ? match[0] : "";
+}
+
+function findPhoneInText(value) {
+  const match = String(value || "").match(
+    /(?:\+?1[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}/
+  );
+  return match ? match[0] : "";
+}
+
+function getMessageEmail(item) {
+  return String(item.email || findEmailInText(item.contact_information)).trim();
+}
+
+function getMessagePhone(item) {
+  return String(item.phone || findPhoneInText(item.contact_information)).trim();
+}
+
+function normalizePhoneForLink(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+
+  const hasLeadingPlus = raw.startsWith("+");
+  const digits = raw.replace(/\D/g, "");
+  return hasLeadingPlus ? `+${digits}` : digits;
+}
+
+function buildEmailReplyLink(item, email) {
+  const subject = "Reply from Hair Image";
+  const body = `Hi ${item.customer_name || "there"},
+
+Thank you for contacting Hair Image.
+
+`;
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function renderMessageReplyButtons(item) {
+  const email = getMessageEmail(item);
+  const phone = getMessagePhone(item);
+  const phoneLink = normalizePhoneForLink(phone);
+  const buttons = [];
+
+  if (email) {
+    buttons.push(`
+      <a class="button primary small-button reply-action-button"
+         href="${escapeHtml(buildEmailReplyLink(item, email))}">
+        Reply by Email
+      </a>
+    `);
+  }
+
+  if (phoneLink) {
+    buttons.push(`
+      <a class="button secondary small-button reply-action-button"
+         href="tel:${escapeHtml(phoneLink)}">
+        Call
+      </a>
+    `);
+
+    buttons.push(`
+      <a class="button secondary small-button reply-action-button"
+         href="sms:${escapeHtml(phoneLink)}">
+        Text
+      </a>
+    `);
+  }
+
+  if (buttons.length === 0) {
+    return '<p class="no-reply-contact">No usable email address or phone number was provided.</p>';
+  }
+
+  return `<div class="message-reply-actions">${buttons.join("")}</div>`;
+}
+
 function renderEmpty(container, text) {
   container.innerHTML = `<div class="admin-empty-state">${escapeHtml(text)}</div>`;
 }
@@ -208,8 +288,11 @@ function renderMessages() {
   }
 
   messagesList.innerHTML = messages
-    .map(
-      (item) => `
+    .map((item) => {
+      const email = getMessageEmail(item);
+      const phone = getMessagePhone(item);
+
+      return `
         <article class="admin-record-card">
           <div class="admin-record-top">
             <div>
@@ -223,8 +306,12 @@ function renderMessages() {
 
           <dl class="record-details">
             <div>
-              <dt>Contact</dt>
-              <dd>${escapeHtml(item.contact_information)}</dd>
+              <dt>Email</dt>
+              <dd>${escapeHtml(email || "Not provided")}</dd>
+            </div>
+            <div>
+              <dt>Phone</dt>
+              <dd>${escapeHtml(phone || "Not provided")}</dd>
             </div>
             <div>
               <dt>Received</dt>
@@ -237,6 +324,8 @@ function renderMessages() {
             <p>${escapeHtml(item.message)}</p>
           </div>
 
+          ${renderMessageReplyButtons(item)}
+
           <div class="record-actions">
             <label>
               Status
@@ -248,8 +337,8 @@ function renderMessages() {
               data-save-message="${escapeHtml(item.id)}">Save Status</button>
           </div>
         </article>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
