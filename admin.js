@@ -156,32 +156,42 @@ function renderMessageReplyButtons(item) {
   const email = getMessageEmail(item);
   const phone = getMessagePhone(item);
   const phoneLink = normalizePhoneForLink(phone);
-  const buttons = [];
+  const preferredMethod = String(item.preferred_contact_method || "").toLowerCase();
 
-  if (email) {
-    buttons.push(`
-      <a class="button primary small-button reply-action-button"
-         href="${escapeHtml(buildEmailReplyLink(item, email))}">
-        Reply by Email
-      </a>
-    `);
-  }
+  const actions = {
+    email: email
+      ? `
+        <a class="button ${preferredMethod === "email" ? "primary" : "secondary"} small-button reply-action-button"
+           href="${escapeHtml(buildEmailReplyLink(item, email))}">
+          Reply by Email${preferredMethod === "email" ? " · Preferred" : ""}
+        </a>
+      `
+      : "",
+    call: phoneLink
+      ? `
+        <a class="button ${preferredMethod === "call" ? "primary" : "secondary"} small-button reply-action-button"
+           href="tel:${escapeHtml(phoneLink)}">
+          Call${preferredMethod === "call" ? " · Preferred" : ""}
+        </a>
+      `
+      : "",
+    text: phoneLink
+      ? `
+        <a class="button ${preferredMethod === "text" ? "primary" : "secondary"} small-button reply-action-button"
+           href="sms:${escapeHtml(phoneLink)}">
+          Text${preferredMethod === "text" ? " · Preferred" : ""}
+        </a>
+      `
+      : ""
+  };
 
-  if (phoneLink) {
-    buttons.push(`
-      <a class="button secondary small-button reply-action-button"
-         href="tel:${escapeHtml(phoneLink)}">
-        Call
-      </a>
-    `);
+  const preferredAction = actions[preferredMethod] || "";
+  const remainingActions = ["email", "text", "call"]
+    .filter((method) => method !== preferredMethod)
+    .map((method) => actions[method])
+    .filter(Boolean);
 
-    buttons.push(`
-      <a class="button secondary small-button reply-action-button"
-         href="sms:${escapeHtml(phoneLink)}">
-        Text
-      </a>
-    `);
-  }
+  const buttons = [preferredAction, ...remainingActions].filter(Boolean);
 
   if (buttons.length === 0) {
     return '<p class="no-reply-contact">No usable email address or phone number was provided.</p>';
@@ -312,6 +322,14 @@ function renderMessages() {
             <div>
               <dt>Phone</dt>
               <dd>${escapeHtml(phone || "Not provided")}</dd>
+            </div>
+            <div>
+              <dt>Preferred contact</dt>
+              <dd>${escapeHtml(statusLabel(item.preferred_contact_method || "not specified"))}</dd>
+            </div>
+            <div>
+              <dt>Text consent</dt>
+              <dd>${item.preferred_contact_method === "text" ? (item.sms_consent ? "Yes" : "No") : "Not applicable"}</dd>
             </div>
             <div>
               <dt>Received</dt>

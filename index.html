@@ -54,7 +54,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260711-2">
+  <link rel="stylesheet" href="style.css?v=20260712-1">
 </head>
 <body>
   <header class="site-header">
@@ -327,6 +327,26 @@
         <p class="field-help">Please provide an email address, phone number, or both so the salon can reply.</p>
 
         <label>
+          Preferred contact method
+          <select id="preferred-contact-method" name="preferred_contact_method" required>
+            <option value="">Choose a contact method</option>
+            <option value="email">Email</option>
+            <option value="text">Text message</option>
+            <option value="call">Phone call</option>
+          </select>
+        </label>
+
+        <div id="sms-consent-group" class="sms-consent-group" hidden>
+          <label class="consent-checkbox">
+            <input id="sms-consent" type="checkbox" name="sms_consent" value="yes">
+            <span>I agree to receive responses and appointment-related text messages from Hair Image at the phone number provided.</span>
+          </label>
+          <p class="sms-disclosure">
+            Message and data rates may apply. Message frequency varies. Reply STOP to opt out.
+          </p>
+        </div>
+
+        <label>
           Message
           <textarea name="message" rows="5" required maxlength="2000"></textarea>
         </label>
@@ -380,7 +400,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260711-2"></script>
-  <script src="script.js?v=20260711-2"></script>
+  <script src="supabase-config.js?v=20260712-1"></script>
+  <script src="script.js?v=20260712-1"></script>
 </body>
 </html>

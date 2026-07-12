@@ -226,6 +226,27 @@ if (bookingForm) {
 }
 
 const contactForm = document.querySelector("#contact-form");
+const preferredContactMethod = document.querySelector("#preferred-contact-method");
+const smsConsentGroup = document.querySelector("#sms-consent-group");
+const smsConsentCheckbox = document.querySelector("#sms-consent");
+
+function updateSmsConsentVisibility() {
+  if (!preferredContactMethod || !smsConsentGroup || !smsConsentCheckbox) return;
+
+  const textSelected = preferredContactMethod.value === "text";
+  smsConsentGroup.hidden = !textSelected;
+  smsConsentCheckbox.required = textSelected;
+
+  if (!textSelected) {
+    smsConsentCheckbox.checked = false;
+  }
+}
+
+if (preferredContactMethod) {
+  preferredContactMethod.addEventListener("change", updateSmsConsentVisibility);
+  updateSmsConsentVisibility();
+}
+
 if (contactForm) {
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -233,6 +254,7 @@ if (contactForm) {
 
     if (isHoneypotFilled(formData)) {
       contactForm.reset();
+      updateSmsConsentVisibility();
       setFormMessage(contactForm, "Thank you. Your message was sent.");
       return;
     }
@@ -248,11 +270,42 @@ if (contactForm) {
 
     const email = String(formData.get("email") || "").trim();
     const phone = String(formData.get("phone") || "").trim();
+    const preferredMethod = String(
+      formData.get("preferred_contact_method") || ""
+    ).trim();
+    const smsConsent = formData.get("sms_consent") === "yes";
 
     if (!email && !phone) {
       setFormMessage(
         contactForm,
         "Please provide an email address, phone number, or both so Hair Image can reply.",
+        "error"
+      );
+      return;
+    }
+
+    if (preferredMethod === "email" && !email) {
+      setFormMessage(
+        contactForm,
+        "Please enter an email address when Email is your preferred contact method.",
+        "error"
+      );
+      return;
+    }
+
+    if ((preferredMethod === "text" || preferredMethod === "call") && !phone) {
+      setFormMessage(
+        contactForm,
+        `Please enter a phone number when ${preferredMethod === "text" ? "Text" : "Phone call"} is your preferred contact method.`,
+        "error"
+      );
+      return;
+    }
+
+    if (preferredMethod === "text" && !smsConsent) {
+      setFormMessage(
+        contactForm,
+        "Please agree to receive text messages before selecting Text as your preferred contact method.",
         "error"
       );
       return;
@@ -273,6 +326,8 @@ if (contactForm) {
       contact_information: contactInformation,
       email: email || null,
       phone: phone || null,
+      preferred_contact_method: preferredMethod,
+      sms_consent: preferredMethod === "text" ? smsConsent : false,
       message: String(formData.get("message") || "").trim()
     });
 
@@ -289,9 +344,10 @@ if (contactForm) {
     }
 
     contactForm.reset();
+    updateSmsConsentVisibility();
     setFormMessage(
       contactForm,
-      "Your message was sent. Hair Image will get back to you as soon as possible."
+      "Your message was sent. Hair Image will get back to you using your preferred contact method."
     );
   });
 }

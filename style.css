@@ -1274,3 +1274,42 @@ button:disabled {
     width: 100%;
   }
 }
+
+
+/* =========================================================
+   PREFERRED CONTACT METHOD AND SMS CONSENT
+   ========================================================= */
+
+.sms-consent-group {
+  padding: 17px;
+  margin: -5px 0 20px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.sms-consent-group[hidden] {
+  display: none;
+}
+
+.consent-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.consent-checkbox input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  margin: 4px 0 0;
+}
+
+.sms-disclosure {
+  margin: 10px 0 0 29px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
