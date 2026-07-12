@@ -1371,3 +1371,49 @@ button:disabled {
     width: 100%;
   }
 }
+
+
+/* =========================================================
+   ABOUT MERLE PHOTO
+   ========================================================= */
+
+.about-section {
+  align-items: center;
+}
+
+.about-copy {
+  max-width: 560px;
+}
+
+.about-photo-card {
+  max-width: 430px;
+  margin: 0;
+  justify-self: end;
+  padding: 14px;
+  background: rgba(255, 253, 249, 0.92);
+  border: 1px solid rgba(47, 39, 35, 0.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.about-photo-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 10px);
+}
+
+.about-photo-card figcaption {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .about-photo-card {
+    max-width: 520px;
+    justify-self: start;
+  }
+}
