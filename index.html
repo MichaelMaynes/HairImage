@@ -178,17 +178,53 @@
           <p class="eyebrow">Client experiences</p>
           <h2>Reviews</h2>
         </div>
-        <p>Approved customer reviews will appear here once the review system is connected.</p>
+        <p>Approved reviews from Hair Image clients appear here.</p>
       </div>
 
-      <div class="review-placeholder">
-        <span class="quote-mark">“</span>
-        <p>Be one of the first clients featured on the Hair Image website.</p>
-        <a href="#contact">Leave a message</a>
+      <div class="reviews-content">
+        <div id="reviews-list" class="reviews-grid" aria-live="polite">
+          <div class="review-loading">Loading reviews…</div>
+        </div>
+
+        <form id="review-form" class="form-card review-form">
+          <p class="eyebrow">Share your experience</p>
+          <h3>Leave a review</h3>
+
+          <label>
+            Your name
+            <input type="text" name="name" autocomplete="name" required maxlength="100">
+          </label>
+
+          <label>
+            Rating
+            <select name="rating" required>
+              <option value="">Choose a rating</option>
+              <option value="5">5 stars — Excellent</option>
+              <option value="4">4 stars — Very good</option>
+              <option value="3">3 stars — Good</option>
+              <option value="2">2 stars — Fair</option>
+              <option value="1">1 star — Poor</option>
+            </select>
+          </label>
+
+          <label>
+            Review
+            <textarea name="review" rows="5" required maxlength="1200" placeholder="Tell others about your visit."></textarea>
+          </label>
+
+          <label class="honeypot" aria-hidden="true">
+            Website
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+          </label>
+
+          <button class="button primary full-width" type="submit">Submit Review</button>
+          <p class="form-note">Reviews are checked before they appear publicly.</p>
+          <div class="form-message" role="status" aria-live="polite"></div>
+        </form>
       </div>
     </section>
 
-    <section id="booking" class="section booking-section">
+<section id="booking" class="section booking-section">
       <div class="booking-intro">
         <p class="eyebrow">Plan your visit</p>
         <h2>Request an appointment</h2>
@@ -212,17 +248,17 @@
         <div class="form-row">
           <label>
             Full name
-            <input type="text" name="name" autocomplete="name" required>
+            <input type="text" name="name" autocomplete="name" required maxlength="100>
           </label>
           <label>
             Phone number
-            <input type="tel" name="phone" autocomplete="tel" required>
+            <input type="tel" name="phone" autocomplete="tel" required maxlength="40">
           </label>
         </div>
 
         <label>
           Email address
-          <input type="email" name="email" autocomplete="email">
+          <input type="email" name="email" autocomplete="email" maxlength="254">
         </label>
 
         <label>
@@ -249,11 +285,16 @@
 
         <label>
           Notes
-          <textarea name="notes" rows="4" placeholder="Tell us what you would like done or share a second-choice time."></textarea>
+          <textarea name="notes" rows="4" maxlength="1500" placeholder="Tell us what you would like done or share a second-choice time."></textarea>
+        </label>
+
+        <label class="honeypot" aria-hidden="true">
+          Website
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
         </label>
 
         <button class="button primary full-width" type="submit">Send Appointment Request</button>
-        <p class="form-note">Online submissions will be activated when the secure database is connected. For now, please call the salon.</p>
+        <p class="form-note">This is a request only. Hair Image will contact you to confirm availability.</p>
         <div class="form-message" role="status" aria-live="polite"></div>
       </form>
     </section>
@@ -268,16 +309,21 @@
       <form id="contact-form" class="form-card compact">
         <label>
           Name
-          <input type="text" name="name" autocomplete="name" required>
+          <input type="text" name="name" autocomplete="name" required maxlength="100>
         </label>
         <label>
           Phone or email
-          <input type="text" name="contact" required>
+          <input type="text" name="contact" required maxlength="254">
         </label>
         <label>
           Message
-          <textarea name="message" rows="5" required></textarea>
+          <textarea name="message" rows="5" required maxlength="2000"></textarea>
         </label>
+        <label class="honeypot" aria-hidden="true">
+          Website
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </label>
+
         <button class="button dark full-width" type="submit">Send Message</button>
         <div class="form-message" role="status" aria-live="polite"></div>
       </form>
@@ -321,6 +367,8 @@
     <p class="copyright">© <span id="year"></span> Hair Image. All rights reserved.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
